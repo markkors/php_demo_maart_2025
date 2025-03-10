@@ -1,5 +1,8 @@
 <?php
 
+$errorcode = 0;
+
+
 function connect_db() {
     $pdo = new PDO("mysql:host=localhost;dbname=gastenboek", "gastenboek", "gastenboek");
     return $pdo;
@@ -8,11 +11,29 @@ function connect_db() {
 
 function insert_user() : bool{
     if(isset($_POST['user']) && isset($_POST['age'])){
+        if(user_exists($_POST['user'])){
+            global $errorcode;
+            $errorcode = 1;
+            return false;
+        }
+
         $pdo = connect_db();
         $stmt = $pdo->prepare("INSERT INTO `user` (`name`, `age`) VALUES (?, ?)");
         $stmt->bindParam(1, $_POST['user']);
         $stmt->bindParam(2, $_POST['age']);
         return $stmt->execute();
+    }
+    return false;
+}
+
+function user_exists() : bool {
+    if(isset($_POST['user'])){
+        $pdo = connect_db();
+        $stmt = $pdo->prepare("SELECT * FROM `user` WHERE `name` = ?");
+        $stmt->bindParam(1, $_POST['user']);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        return count($result) > 0;
     }
     return false;
 }
@@ -24,6 +45,9 @@ function get_users() : array {
     $result = $stmt->fetchAll();
     return $result;
 }
+
+
+
 
 function get_html_user_table() : string {
     $result = get_users();
