@@ -1,7 +1,7 @@
 <?php
 
 // records tonen uit database
-require_once("database.php");
+require("database.php");
 
 ?>
 <!DOCTYPE html>
@@ -21,6 +21,8 @@ require_once("database.php");
 
     <p>Latest records:</p>
     <?=get_html_user_table() ?>
+
+   
 
 
 </body>

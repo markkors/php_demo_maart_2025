@@ -1,12 +1,17 @@
 <?php
 $error_message = null;
 
-if($_GET['errorcode'] == 1){
-    $error_message = "<p>Sorry, user bestaat al!</p>";
-} else if($_GET['errorcode'] == 2){
-    $error_message = "<p>Sorry, database is offline!</p>";
+if(!isset($_GET['errorcode'])){
+    header("Location: get.php");
+    exit();
 } else {
-    $error_message = "<p>Sorry, er is een fout opgetreden!</p>";
+    if($_GET['errorcode'] == 1){
+        $error_message = "<p>Sorry, user bestaat al!</p>";
+    } else if($_GET['errorcode'] == 2){
+        $error_message = "<p>Sorry, database is offline!</p>";
+    } else {
+        $error_message = "<p>Sorry, er is een fout opgetreden!</p>";
+    }    
 }
 
 ?>
@@ -19,5 +24,11 @@ if($_GET['errorcode'] == 1){
 </head>
 <body>
     <?=$error_message?>
+    <script>
+        // stuur de gebruiker automatisch terug naar de get.php pagina
+        setTimeout(function(){
+            window.location.href = "get.php";
+        }, 3000);
+    </script>
 </body>
 </html>

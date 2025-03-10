@@ -9,34 +9,31 @@ function connect_db() {
 }
 
 
-function insert_user() : bool{
-    if(isset($_POST['user']) && isset($_POST['age'])){
-        if(user_exists($_POST['user'])){
+function insert_user($u,$a) : bool {
+        $result = false;
+        if(user_exists($u)){
             global $errorcode;
             $errorcode = 1;
-            return false;
+            return false; // end function, return false
         }
 
         $pdo = connect_db();
         $stmt = $pdo->prepare("INSERT INTO `user` (`name`, `age`) VALUES (?, ?)");
-        $stmt->bindParam(1, $_POST['user']);
-        $stmt->bindParam(2, $_POST['age']);
-        return $stmt->execute();
-    }
-    return false;
+        $stmt->bindParam(1, $u);
+        $stmt->bindParam(2, $a);
+        $result = $stmt->execute();
+        return $result;
 }
 
-function user_exists() : bool {
-    if(isset($_POST['user'])){
+function user_exists($u) : bool {
         $pdo = connect_db();
         $stmt = $pdo->prepare("SELECT * FROM `user` WHERE `name` = ?");
-        $stmt->bindParam(1, $_POST['user']);
+        $stmt->bindParam(1, $u);
         $stmt->execute();
         $result = $stmt->fetchAll();
         return count($result) > 0;
-    }
-    return false;
 }
+    
 
 function get_users() : array {
     $pdo = connect_db();
@@ -48,7 +45,9 @@ function get_users() : array {
 
 
 
-
+/*
+return a HTML table with the users
+*/
 function get_html_user_table() : string {
     $result = get_users();
     $html_table = "<table>
