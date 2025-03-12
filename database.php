@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
+error_reporting(E_ALL);
 
 $errorcode = 0;
 
 
-function connect_db() {
+function connect_db() : PDO {
     $pdo = new PDO("mysql:host=localhost;dbname=gastenboek", "gastenboek", "gastenboek");
     return $pdo;
 }
@@ -25,7 +27,7 @@ function insert_user($u,$a) : bool {
         return $result;
 }
 
-function user_exists($u) : bool {
+function user_exists($u) : bool{
         $pdo = connect_db();
         $stmt = $pdo->prepare("SELECT * FROM `user` WHERE `name` = ?");
         $stmt->bindParam(1, $u);
