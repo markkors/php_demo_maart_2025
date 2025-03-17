@@ -91,4 +91,21 @@ class db
         $html_table .= "</table>";
         return $html_table;
     }
+
+
+    function register_user($u,$a,$password) : bool {
+        
+        $result = false;
+        try {
+        $stmt = $this->pdo->prepare("INSERT INTO `user` (`name`, `age`,`password`) VALUES (?, ?,?)");
+        $stmt->bindParam(1, $u);
+        $stmt->bindParam(2, $a);
+        $password = password_hash($password, PASSWORD_DEFAULT);
+        $stmt->bindParam(3, $password);
+        $result = $stmt->execute();
+        } catch (PDOException $e) {
+            $result = false;
+        }
+        return $result;
+    }
 }
