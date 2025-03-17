@@ -1,6 +1,11 @@
 <?php
 
-
+session_start();
+if(isset($_SESSION["username"]) && $_SESSION["sessionid"] == session_id()) { 
+    echo "Welkom " . $_SESSION["username"];
+} else {
+    header("Location: login.php");
+}
 
 
 // records tonen uit database
@@ -49,6 +54,10 @@ $db = new db(); // instance van de class maken -> object
     <?=$db->get_html_user_table() ?>
 
    
+
+    <form method="post" action="logout.php">
+        <button>Logout</button>
+    </form>
 
 
 </body>

@@ -22,7 +22,7 @@ require("classes/db.php");
             header("Location: login.php");
 
         } else {
-            echo "<a href=\"register.php\">User niet geregistreerd</a>";
+            echo "<a href=\"register.php\">User niet geregistreerd (wellicht bestaat user al)</a>";
         }
 
 

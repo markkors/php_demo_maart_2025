@@ -1,10 +1,31 @@
 <?php
+    require("classes/db.php");
+
     // ben ik aan het posten / inloggen???
     if(isset($_POST['submit'])){
        // post vars uitlezen
        $username = $_POST['username'];
        $password = $_POST['password'];
+       
+       $db = new db();
+      if ($db->checklogin($username, $password)) {
+        // ingelogd
+        //echo "ingelogd";
+        // maak een sessie aan
+        session_start();
+        $_SESSION["username"] = $username;
+        $_SESSION["loggedin"] = true;
+        $_SESSION["sessionid"] = session_id(); 
+        header("Location: get.php");
+      } else {
+        // niet ingelogd
+        echo "niet ingelogd";
+      }
 
+       // user checken
+       // klopt het password?
+       // zo ja, ingelogd
+         // zo nee, foutmelding
 
     }
 ?>

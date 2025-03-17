@@ -29,6 +29,33 @@ class db
         }
     }
 
+    public function checklogin($username, $password) : bool
+    {
+        $result = false;
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM `user` WHERE `name` = ?");
+            $stmt->bindParam(1, $username);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            if (count($result) > 0) {
+                $hash = $result[0]['password'];
+                if (password_verify($password, $hash)) {
+                    $result = true;
+                } else {
+                    $result = false;
+                }
+            } else {
+                $result = false;
+            }
+        } catch (PDOException $e) {
+            $result = false;
+        } finally {
+            return $result;
+        }   
+
+    }
+
+
     /***
      * Get all users from the database
      * @return array
@@ -96,16 +123,21 @@ class db
     function register_user($u,$a,$password) : bool {
         
         $result = false;
+        
         try {
-        $stmt = $this->pdo->prepare("INSERT INTO `user` (`name`, `age`,`password`) VALUES (?, ?,?)");
-        $stmt->bindParam(1, $u);
-        $stmt->bindParam(2, $a);
-        $password = password_hash($password, PASSWORD_DEFAULT);
-        $stmt->bindParam(3, $password);
-        $result = $stmt->execute();
+            $stmt = $this->pdo->prepare("INSERT INTO `user` (`name`, `age`,`password`) VALUES (?, ?,?)");
+            $stmt->bindParam(1, $u);
+            $stmt->bindParam(2, $a);
+            $password = password_hash($password, PASSWORD_DEFAULT);
+            $stmt->bindParam(3, $password);
+            $result = $stmt->execute();
         } catch (PDOException $e) {
             $result = false;
+        } finally {
+            return $result;
         }
-        return $result;
+      
+       
+      
     }
 }
