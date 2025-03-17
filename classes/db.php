@@ -35,7 +35,7 @@ class db
         $result = false;
         
         try {
-            $stmt = $this->pdo->prepare("SELECT * FROM `user` WHERE `names` = ?");
+            $stmt = $this->pdo->prepare("SELECT * FROM `user` WHERE `name` = ?");
             $stmt->bindParam(1, $username);
             $stmt->execute();
             $user = $stmt->fetch();
