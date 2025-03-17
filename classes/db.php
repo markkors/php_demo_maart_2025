@@ -58,6 +58,24 @@ class db
         return $result;
     }
 
+    public function register_user($name,$age,$password) : bool{
+        $result = false;
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO `user` (`name`, `age`,`password`) VALUES (?, ?,?)");
+            $stmt->bindParam(1, $name);
+            $stmt->bindParam(2, $age);
+            $password = password_hash($password, PASSWORD_DEFAULT);
+            $stmt->bindParam(3, $password);
+            $result = $stmt->execute(); // true / false;
+        } catch (PDOException $e) {
+            $result = false;
+        }
+        
+       
+        return $result;
+    }
+
+    
     public function hello_world()
     {
         return "Hello world";

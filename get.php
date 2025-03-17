@@ -1,13 +1,18 @@
 <?php
 
 
+
+
 // records tonen uit database
 //require("database.php");
 
 require("classes/db.php");
+
+
+
 $db = new db(); // instance van de class maken -> object
 
-//$db->get_users();
+
 //echo $db->hello_world();
 //echo $db->message("Hello world too");
 
@@ -45,7 +50,7 @@ $db = new db(); // instance van de class maken -> object
 
     <p>Latest records:</p>
     <?=$db->get_html_user_table() ?>
-
+    
    
 
 
