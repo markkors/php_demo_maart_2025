@@ -1,7 +1,18 @@
 <?php
 
+// ben ik ingelogd?
+session_start();
+var_dump($_SESSION);
 
 
+$username = "";
+if(!isset($_SESSION["username"])) {
+    header("Location: login.php");
+    exit;
+} else {
+    $id = $_SESSION["user"]["id"];
+    $username = $_SESSION["username"];
+}
 
 // records tonen uit database
 //require("database.php");
@@ -41,17 +52,16 @@ $db = new db(); // instance van de class maken -> object
 
 </head>
 <body>
-    <form method="post" action="verwerk.php">
-        <input type="text" name="user" placeholder="User">
-        <input type="text" name="age" placeholder="Age">
-        
-        <button>Send</button>
+   
+    <form method="post" action="logout.php">
+        <input type="submit" value="Logout">
     </form>
 
-    <p>Latest records:</p>
+    <h1>User overview</h1>
+    <p>Welkom <?=$username ?></p>   
     <?=$db->get_html_user_table() ?>
     
-   
+ 
 
 
 </body>

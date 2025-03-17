@@ -29,6 +29,32 @@ class db
         }
     }
 
+
+    public function doLogin($username, $password, &$usr, &$error): bool
+    {
+        $result = false;
+        
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM `user` WHERE `names` = ?");
+            $stmt->bindParam(1, $username);
+            $stmt->execute();
+            $user = $stmt->fetch();
+            
+            if ($user) {
+                $hash = $user['password'];
+                if (password_verify($password, $hash)) {
+                    $result = true;
+                     $usr = $user;
+                }
+            }
+        } catch (PDOException $e) {
+            $error = $e;
+            $result = false;
+        }
+       return $result;
+    }
+
+
     /***
      * Get all users from the database
      * @return array
@@ -68,6 +94,7 @@ class db
             $stmt->bindParam(3, $password);
             $result = $stmt->execute(); // true / false;
         } catch (PDOException $e) {
+            //var_dump($e);
             $result = false;
         }
         

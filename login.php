@@ -1,8 +1,32 @@
 <?php
 
+require("classes/db.php");
 // ben je aan het posten?
+if(isset($_POST["submit"])) {
 
-// zo ja, lees de post variabelen in
+  
+    // ga je gang
+    // zo ja, lees de post variabelen in
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+    $db = new db();
+    $user = null;
+    $error = null;
+    if($db->doLogin($username, $password, $user,$error)) {
+        //echo "Je bent ingelogd";
+        session_start();
+        $_SESSION["username"] = $username;
+        $_SESSION["user"] = $user;
+        header("Location: get.php");
+    } else {
+        $m = $error->getMessage();
+        echo "Je bent niet ingelogd omdat $m";
+    }
+
+}
+
+
+
 
 // haal de user uit de dabase met hashed password
 
@@ -21,7 +45,7 @@
 </head>
 <body>
     <h1>Login</h1>
-    <form>
+    <form method="post">
         <input type="text" name="username" placeholder="Username">
         <input type="password" name="password" placeholder="Password">
         <input type="submit" name="submit" value="Login">
