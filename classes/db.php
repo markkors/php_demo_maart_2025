@@ -30,6 +30,24 @@ class db
     }
 
 
+    public function getUser($id) : user {
+        $result = null;
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM `user` WHERE `id` = ?");
+            $stmt->bindParam(1, $id);
+            $stmt->execute();
+            $row = $stmt->fetch(); //assoc array
+            $user = new user();
+            $user->id = $row['id'];
+            $user->name = $row['name'];
+            $user->age = $row['age'];
+            $result = $user;
+        } catch (PDOException $e) {
+            $result = null;
+        }
+        return $result;
+    }
+
     public function doLogin($username, $password, &$usr, &$error): bool
     {
         $result = false;
@@ -40,6 +58,7 @@ class db
             $stmt->execute();
             $user = $stmt->fetch();
             
+
             if ($user) {
                 $hash = $user['password'];
                 if (password_verify($password, $hash)) {
@@ -113,6 +132,24 @@ class db
         return $message;
     }
 
+
+public function get_html_user_edit_form($user) : string {
+    
+    $html = <<< HTML
+    <h1>Edit user</h1>
+    <form method="post">
+        <input type="text" name="name" value="$user->name">
+        <input type="text" name="age" value="$user->age">
+        <input type="submit" name="submit" value="Update">
+        <input type="hidden" name="id" value="$user->id">
+    </form>
+HTML;
+    
+    
+return $html;
+
+}
+
     public function get_html_user_table()
     {
         $result = $this->get_users();   // array met users
@@ -128,7 +165,7 @@ class db
         foreach ($result as $user) {
            
             $html_table .= "<tr>";
-            $html_table .= "<td>" . $user->id . "</td>";
+            $html_table .= "<td><a href='?id=$user->id'>$user->id</a></td>";
             $html_table .= "<td>" . $user->name . "</td>";
             $html_table .= "<td>" . $user->age . "</td>";
             $html_table .= "</tr>";
