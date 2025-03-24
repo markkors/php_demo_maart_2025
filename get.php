@@ -19,23 +19,27 @@ if (!isset($_SESSION["username"])) {
 
 
 
-    
+
     // post edit?   
-    var_dump($_POST);
     if (isset($_POST["submit"]) && $_POST["submit"] == "Update") {
+        // werkelijk update
         $id = $_POST["id"];
         $name = $_POST["name"];
         $age = $_POST["age"];
-        $db->updateUser($id, $name, $age);
+        if($db->updateUser($id, $name, $age)) {
+            header("Location: logout.php");
+        }
+    
+    
     } else {
-        // edit (update of delete) geklikt
+        // edit (update of delete) geklikt -> toon formulier
         if (isset($_GET["id"])) {
             $id = $_GET["id"];
             $action = $_GET["action"];
-            switch($action) {
+            switch ($action) {
                 case "update":
                     $UserToEdit = $db->getUser($id);
-                    if($_SESSION["user"]["id"] == $UserToEdit->id) {
+                    if ($_SESSION["user"]["id"] == $UserToEdit->id) {
                         $editForm = $db->get_html_user_edit_form($UserToEdit);
                     } else {
                         $editForm = "You are not allowed to edit this user";
@@ -43,7 +47,7 @@ if (!isset($_SESSION["username"])) {
                     break;
                 case "delete":
                     $UserToDelete = $db->getUser($id);
-                    if($_SESSION["user"]["id"] == $UserToDelete->id) {
+                    if ($_SESSION["user"]["id"] == $UserToDelete->id) {
                         $deleteForm = $db->get_html_user_delete_form($UserToDelete);
                     } else {
                         $deleteForm = "You are not allowed to delete this user";
@@ -52,9 +56,9 @@ if (!isset($_SESSION["username"])) {
             }
 
 
-            
-            
-           
+
+
+
 
             //$editForm = $db->get_html_user_edit_form($UserToEdit);
         }
@@ -91,22 +95,43 @@ if (!isset($_SESSION["username"])) {
             width: 100%;
             border: 1px solid black;
         }
+
+        .menu {
+            display: flex;
+        }
+
+        .menu div {
+            margin: 10px;
+        }
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
 </head>
 
 <body>
+    <div class="menu">
+        <div>
+            <form method="post" action="register.php">
+                <input type="submit" value="Register (Create)">
+            </form>
+        </div>
+        <div>
+            <form method="post" action="logout.php">
+                <input type="submit" value="Logout">
+            </form>
+        </div>
+    </div>
 
-    <form method="post" action="logout.php">
-        <input type="submit" value="Logout">
-    </form>
 
     <div>
         <?= $editForm ?>
+    </div>
+    <div>
         <?= $deleteForm ?>
     </div>
 
-    
+ 
+
+
 
     <h1>User overview</h1>
     <p>Welkom <?= $username ?></p>

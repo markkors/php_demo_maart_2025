@@ -29,7 +29,7 @@ class db
         }
     }
 
-    public function updateUser($id, $name, $age) {
+    public function updateUser($id, $name, $age) : bool {
         $result = false;
         try {
             $stmt = $this->pdo->prepare("UPDATE `user` SET `name` = ?, `age` = ? WHERE `id` = ?");
@@ -42,6 +42,9 @@ class db
         }
         return $result;
     }
+
+
+   
 
     public function getUser($id) : user {
         $result = null;
@@ -191,7 +194,7 @@ return $html;
             $html_table .= "<tr>";
 
             if($_SESSION["user"]["id"] == $user->id) {
-                $html_table .= "<td><a href='?action=update&id=$user->id'><i class=\"fa-solid fa-pen\"></i></a><a href='?action=delete&id=$user->id'><i class=\"fa-solid fa-trash\"></i></a></td>";
+                $html_table .= "<td><a href=\"?action=update&id=$user->id\"><i class=\"fa-solid fa-pen\"></i></a><a href=\"?action=delete&id=$user->id\"><i class=\"fa-solid fa-trash\"></i></a></td>";
                 
             } else {
                 $html_table .= "<td>$user->id</td>";
