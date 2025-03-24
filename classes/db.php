@@ -166,7 +166,7 @@ return $html;
            
             $html_table .= "<tr>";
             $html_table .= "<td><a href='?id=$user->id'>$user->id</a></td>";
-            $html_table .= "<td>" . $user->name . "</td>";
+            $html_table .= "<td>" . htmlspecialchars($user->name). "</td>";
             $html_table .= "<td>" . $user->age . "</td>";
             $html_table .= "</tr>";
         }

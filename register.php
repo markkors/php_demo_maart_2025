@@ -4,7 +4,7 @@ require("classes/db.php");
 
     if(isset($_POST['submit'])) {
       // registreer de user
-        $username = $_POST['username'];
+        $username = htmlspecialchars($_POST['username']);
         $password1 = $_POST['password1'];
         $password2 = $_POST['password2'];
         // check of de wachtwoorden gelijk zijn
@@ -20,11 +20,7 @@ require("classes/db.php");
             header("Location: login.php");
         } else {
             echo "User is niet toegevoegd (wellicht bestaat deze al?)";
-        }
-
-
-
-        
+        }        
     }
 ?>
 

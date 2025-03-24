@@ -29,7 +29,7 @@ if(!isset($_SESSION["username"])) {
         $id = $_POST["id"];
         $name = $_POST["name"];
         $age = $_POST["age"];
-        $db->updateUser($id, $name, $age);
+        //$db->updateUser($id, $name, $age);
     }   
 
 

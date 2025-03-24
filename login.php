@@ -19,8 +19,10 @@ if(isset($_POST["submit"])) {
         $_SESSION["user"] = $user;
         header("Location: get.php");
     } else {
-        $m = $error->getMessage();
-        echo "Je bent niet ingelogd omdat $m";
+        if(isset($error)) {
+            $m = $error->getMessage();
+            echo "Je bent niet ingelogd omdat $m";
+        }
     }
 
 }
