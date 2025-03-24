@@ -6,33 +6,59 @@ session_start();
 
 
 $username = "";
-if(!isset($_SESSION["username"])) {
+if (!isset($_SESSION["username"])) {
     header("Location: login.php");
     exit;
 } else {
     // ingelogd
     require("classes/db.php");
     $db = new db(); // instance van de class maken -> object
-    $username = $_SESSION["username"];    
+    $username = $_SESSION["username"];
     $editForm = null;
+    $deleteForm = null;
 
-    // edit geklikt
-    if(isset($_GET["id"])) {
-        $id = $_GET["id"];
-        $UserToEdit = $db->getUser($id);
-        $editForm = $db->get_html_user_edit_form($UserToEdit);
-    }
 
+
+    
     // post edit?   
     var_dump($_POST);
-    if(isset($_POST["submit"]) && $_POST["submit"] == "Update") {
+    if (isset($_POST["submit"]) && $_POST["submit"] == "Update") {
         $id = $_POST["id"];
         $name = $_POST["name"];
         $age = $_POST["age"];
-        //$db->updateUser($id, $name, $age);
-    }   
+        $db->updateUser($id, $name, $age);
+    } else {
+        // edit (update of delete) geklikt
+        if (isset($_GET["id"])) {
+            $id = $_GET["id"];
+            $action = $_GET["action"];
+            switch($action) {
+                case "update":
+                    $UserToEdit = $db->getUser($id);
+                    if($_SESSION["user"]["id"] == $UserToEdit->id) {
+                        $editForm = $db->get_html_user_edit_form($UserToEdit);
+                    } else {
+                        $editForm = "You are not allowed to edit this user";
+                    }
+                    break;
+                case "delete":
+                    $UserToDelete = $db->getUser($id);
+                    if($_SESSION["user"]["id"] == $UserToDelete->id) {
+                        $deleteForm = $db->get_html_user_delete_form($UserToDelete);
+                    } else {
+                        $deleteForm = "You are not allowed to delete this user";
+                    }
+                    break;
+            }
 
 
+            
+            
+           
+
+            //$editForm = $db->get_html_user_edit_form($UserToEdit);
+        }
+    }
 }
 
 
@@ -55,6 +81,7 @@ if(!isset($_SESSION["username"])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,25 +91,30 @@ if(!isset($_SESSION["username"])) {
             width: 100%;
             border: 1px solid black;
         }
-        </style>
-
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
 </head>
+
 <body>
-   
+
     <form method="post" action="logout.php">
         <input type="submit" value="Logout">
     </form>
 
     <div>
-        <?=$editForm ?>
+        <?= $editForm ?>
+        <?= $deleteForm ?>
     </div>
 
-    <h1>User overview</h1>
-    <p>Welkom <?=$username ?></p>   
-    <?=$db->get_html_user_table() ?>
     
- 
+
+    <h1>User overview</h1>
+    <p>Welkom <?= $username ?></p>
+    <?= $db->get_html_user_table() ?>
+
+
 
 
 </body>
+
 </html>

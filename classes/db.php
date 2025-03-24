@@ -29,6 +29,19 @@ class db
         }
     }
 
+    public function updateUser($id, $name, $age) {
+        $result = false;
+        try {
+            $stmt = $this->pdo->prepare("UPDATE `user` SET `name` = ?, `age` = ? WHERE `id` = ?");
+            $stmt->bindParam(1, $name);
+            $stmt->bindParam(2, $age);
+            $stmt->bindParam(3, $id);
+            $result = $stmt->execute();
+        } catch (PDOException $e) {
+            $result = false;
+        }
+        return $result;
+    }
 
     public function getUser($id) : user {
         $result = null;
@@ -150,13 +163,24 @@ return $html;
 
 }
 
+public function get_html_user_delete_form($user) : string {
+    $html = <<< HTML
+    <h1>Delete user "$user->name"</h1>
+    <form method="post">
+        <input type="submit" name="submit" value="Delete">
+        <input type="hidden" name="id" value="$user->id">
+    </form>
+HTML;
+return $html;
+}
+
     public function get_html_user_table()
     {
         $result = $this->get_users();   // array met users
         $html_table = "<table>
     <thead>
         <tr>
-            <th>ID</th>
+            <th>CRUD</th>
             <th>Name</th>
             <th>Age</th>
         </tr>
@@ -165,7 +189,15 @@ return $html;
         foreach ($result as $user) {
            
             $html_table .= "<tr>";
-            $html_table .= "<td><a href='?id=$user->id'>$user->id</a></td>";
+
+            if($_SESSION["user"]["id"] == $user->id) {
+                $html_table .= "<td><a href='?action=update&id=$user->id'><i class=\"fa-solid fa-pen\"></i></a><a href='?action=delete&id=$user->id'><i class=\"fa-solid fa-trash\"></i></a></td>";
+                
+            } else {
+                $html_table .= "<td>$user->id</td>";
+            }
+
+            //$html_table .= "<td><a href='?id=$user->id'>$user->id</a></td>";
             $html_table .= "<td>" . htmlspecialchars($user->name). "</td>";
             $html_table .= "<td>" . $user->age . "</td>";
             $html_table .= "</tr>";
