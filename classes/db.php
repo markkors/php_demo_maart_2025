@@ -29,6 +29,18 @@ class db
         }
     }
 
+public function deleteUser($id) : bool {
+        $result = false;
+        try {
+            $stmt = $this->pdo->prepare("DELETE FROM `user` WHERE `id` = ?");
+            $stmt->bindParam(1, $id);
+            $result = $stmt->execute();
+        } catch (PDOException $e) {
+            $result = false;
+        }
+        return $result;
+    }
+
     public function updateUser($id, $name, $age) : bool {
         $result = false;
         try {

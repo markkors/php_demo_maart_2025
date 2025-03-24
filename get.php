@@ -16,9 +16,7 @@ if (!isset($_SESSION["username"])) {
     $username = $_SESSION["username"];
     $editForm = null;
     $deleteForm = null;
-
-
-
+}
 
     // post edit?   
     if (isset($_POST["submit"]) && $_POST["submit"] == "Update") {
@@ -29,9 +27,16 @@ if (!isset($_SESSION["username"])) {
         if($db->updateUser($id, $name, $age)) {
             header("Location: logout.php");
         }
-    
-    
+    } else if (isset($_POST["submit"]) && $_POST["submit"] == "Delete") {
+        // als ga deleten
+        $id = $_POST["id"];
+        if($db->deleteUser($id)) {
+            header("Location: logout.php");
+        }
     } else {
+       
+        var_dump($_GET);
+
         // edit (update of delete) geklikt -> toon formulier
         if (isset($_GET["id"])) {
             $id = $_GET["id"];
@@ -54,16 +59,8 @@ if (!isset($_SESSION["username"])) {
                     }
                     break;
             }
-
-
-
-
-
-
-            //$editForm = $db->get_html_user_edit_form($UserToEdit);
         }
     }
-}
 
 
 
